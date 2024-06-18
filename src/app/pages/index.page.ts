@@ -1,46 +1,29 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SearchService } from './search.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
+  imports: [ReactiveFormsModule],
   template: `
-    <div>
-      <a href="https://analogjs.org/" target="_blank">
-        <img alt="Analog Logo" class="logo analog" src="/analog.svg" />
-      </a>
-    </div>
+    <h2>AlgoriaSearch</h2>
 
-    <h2>Analog</h2>
-
-    <h3>The fullstack meta-framework for Angular!</h3>
-
-    <div class="card">
-      <button type="button" (click)="increment()">Count {{ count() }}</button>
-    </div>
-
-    <p class="read-the-docs">
-      For guides on how to customize this project, visit the
-      <a href="https://analogjs.org" target="_blank">Analog documentation</a>
-    </p>
+    <br />
+    <input [formControl]="formControl" />
+    <br />
+    <br />
+    <button (click)="search()">Search</button>
   `,
-  styles: [
-    `
-      .logo {
-        will-change: filter;
-      }
-      .logo:hover {
-        filter: drop-shadow(0 0 2em #646cffaa);
-      }
-      .read-the-docs {
-        color: #888;
-      }
-    `,
-  ],
 })
 export default class HomeComponent {
-  count = signal(0);
+  readonly searchService = inject(SearchService);
+  readonly formControl = new FormControl('');
 
-  increment() {
-    this.count.update((count) => count + 1);
+  search() {
+    const query = this.formControl.value;
+    if (!query) return;
+    console.log('Searching for:', query);
+    this.searchService.search(query);
   }
 }
